@@ -1,25 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import {
+  CreateEmployee,
+  DashBoard,
+  EmployeeEdit,
+  EmployeeList,
+  Login,
+} from "./pages";
+import ProtectedRoute from "./components/ProtectedRoute";
+import useAuthStore from "./store/useAuthStore";
 
-function App() {
+const App = () => {
+  const { chechAuth, isAuthenticated } = useAuthStore();
+
+  useEffect(() => {
+    chechAuth();
+  }, [chechAuth,isAuthenticated]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Routes>
+        <Route path="/login" exact element={<Login />}></Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" exact element={<DashBoard />}></Route>
+          <Route
+            path="/create-employee"
+            exact
+            element={<CreateEmployee />}
+          ></Route>
+          <Route
+            path="/edit-employee/:id"
+            exact
+            element={<EmployeeEdit />}
+          ></Route>
+          <Route path="/employee-list" exact element={<EmployeeList />}></Route>
+        </Route>
+      </Routes>
+      <Toaster />
     </div>
   );
-}
+};
 
 export default App;
